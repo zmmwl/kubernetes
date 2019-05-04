@@ -38,7 +38,7 @@ type REST struct {
 }
 
 // NewREST returns a RESTStorage object that will work against DaemonSets.
-func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST) {
+func NewREST(optsGetter generic.RESTOptionsGetter) (*REST, *StatusREST) { //zmm: ?
 	store := &genericregistry.Store{
 		NewFunc:                  func() runtime.Object { return &apps.DaemonSet{} },
 		NewListFunc:              func() runtime.Object { return &apps.DaemonSetList{} },

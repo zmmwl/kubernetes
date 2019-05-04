@@ -352,7 +352,7 @@ func (s *GenericAPIServer) installAPIResources(apiPrefix string, apiGroupInfo *A
 		apiGroupVersion.OpenAPIModels = openAPIModels
 		apiGroupVersion.MaxRequestBodyBytes = s.maxRequestBodyBytes
 
-		if err := apiGroupVersion.InstallREST(s.Handler.GoRestfulContainer); err != nil {
+		if err := apiGroupVersion.InstallREST(s.Handler.GoRestfulContainer); err != nil { //zmm:
 			return fmt.Errorf("unable to setup API %v: %v", apiGroupInfo, err)
 		}
 	}
@@ -370,7 +370,7 @@ func (s *GenericAPIServer) InstallLegacyAPIGroup(apiPrefix string, apiGroupInfo 
 		return fmt.Errorf("unable to get openapi models: %v", err)
 	}
 
-	if err := s.installAPIResources(apiPrefix, apiGroupInfo, openAPIModels); err != nil {
+	if err := s.installAPIResources(apiPrefix, apiGroupInfo, openAPIModels); err != nil { //zmm:
 		return err
 	}
 

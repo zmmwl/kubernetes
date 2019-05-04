@@ -105,7 +105,7 @@ func (g *APIGroupVersion) InstallREST(container *restful.Container) error {
 		enableAPIResponseCompression: g.EnableAPIResponseCompression,
 	}
 
-	apiResources, ws, registrationErrors := installer.Install()
+	apiResources, ws, registrationErrors := installer.Install() //zmm:
 	versionDiscoveryHandler := discovery.NewAPIVersionHandler(g.Serializer, g.GroupVersion, staticLister{apiResources})
 	versionDiscoveryHandler.AddToWebService(ws)
 	container.Add(ws)

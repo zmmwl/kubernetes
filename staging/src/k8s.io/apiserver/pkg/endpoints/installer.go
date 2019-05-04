@@ -106,7 +106,7 @@ func (a *APIInstaller) Install() ([]metav1.APIResource, *restful.WebService, []e
 	}
 	sort.Strings(paths)
 	for _, path := range paths {
-		apiResource, err := a.registerResourceHandlers(path, a.group.Storage[path], ws)
+		apiResource, err := a.registerResourceHandlers(path, a.group.Storage[path], ws) //zmm: 非常复杂
 		if err != nil {
 			errors = append(errors, fmt.Errorf("error in registering resource: %s, %v", path, err))
 		}
@@ -228,7 +228,7 @@ func (a *APIInstaller) registerResourceHandlers(path string, storage rest.Storag
 		}
 		namespaceScoped = scoper.NamespaceScoped()
 	}
-
+	//zmm: verbs create list get update patch watch .....
 	// what verbs are supported by the storage, used to know what verbs we support per path
 	creater, isCreater := storage.(rest.Creater)
 	namedCreater, isNamedCreater := storage.(rest.NamedCreater)
@@ -607,7 +607,7 @@ func (a *APIInstaller) registerResourceHandlers(path string, storage rest.Storag
 
 		verbOverrider, needOverride := storage.(StorageMetricsOverride)
 
-		switch action.Verb {
+		switch action.Verb {  //zmm:
 		case "GET": // Get a resource.
 			var handler restful.RouteFunction
 			if isGetterWithOptions {
@@ -807,7 +807,7 @@ func (a *APIInstaller) registerResourceHandlers(path string, storage rest.Storag
 			addParams(route, action.Params)
 			routes = append(routes, route)
 		// deprecated in 1.11
-		case "WATCH": // Watch a resource.
+		case "WATCH": // Watch a resource. //zmm: watch
 			doc := "watch changes to an object of kind " + kind
 			if isSubresource {
 				doc = "watch changes to " + subresource + " of an object of kind " + kind

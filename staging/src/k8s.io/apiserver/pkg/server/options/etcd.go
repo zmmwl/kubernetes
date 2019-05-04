@@ -229,7 +229,7 @@ func (f *SimpleRestOptionsFactory) GetRESTOptions(resource schema.GroupResource)
 		if !ok {
 			cacheSize = f.Options.DefaultWatchCacheSize
 		}
-		ret.Decorator = genericregistry.StorageWithCacher(cacheSize)
+		ret.Decorator = genericregistry.StorageWithCacher(cacheSize) //zmm:
 	}
 	return ret, nil
 }

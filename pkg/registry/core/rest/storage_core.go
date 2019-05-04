@@ -185,7 +185,7 @@ func (c LegacyRESTStorageProvider) NewLegacyRESTStorage(restOptionsGetter generi
 
 	serviceRest, serviceRestProxy := servicestore.NewREST(serviceRESTStorage, endpointsStorage, podStorage.Pod, serviceClusterIPAllocator, serviceNodePortAllocator, c.ProxyTransport)
 
-	restStorageMap := map[string]rest.Storage{
+	restStorageMap := map[string]rest.Storage{ //zmm: storage - pod,service,node,configmap等
 		"pods":             podStorage.Pod,
 		"pods/attach":      podStorage.Attach,
 		"pods/status":      podStorage.Status,

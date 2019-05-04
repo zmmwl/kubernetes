@@ -44,7 +44,7 @@ import (
 )
 
 func createHandler(r rest.NamedCreater, scope RequestScope, admit admission.Interface, includeName bool) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) { //zmm: create handler
 		// For performance tracking purposes.
 		trace := utiltrace.New("Create " + req.URL.Path)
 		defer trace.LogIfLong(500 * time.Millisecond)
@@ -153,7 +153,7 @@ func createHandler(r rest.NamedCreater, scope RequestScope, admit admission.Inte
 
 		trace.Step("About to store object in database")
 		result, err := finishRequest(timeout, func() (runtime.Object, error) {
-			return r.Create(
+			return r.Create( //zmm:
 				ctx,
 				name,
 				obj,

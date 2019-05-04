@@ -250,7 +250,7 @@ func ListResource(r rest.Lister, rw rest.Watcher, scope RequestScope, forceWatch
 			}
 			klog.V(3).Infof("Starting watch for %s, rv=%s labels=%s fields=%s timeout=%s", req.URL.Path, opts.ResourceVersion, opts.LabelSelector, opts.FieldSelector, timeout)
 
-			watcher, err := rw.Watch(ctx, &opts)
+			watcher, err := rw.Watch(ctx, &opts) //zmm: watch
 			if err != nil {
 				scope.err(err, w, req)
 				return

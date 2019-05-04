@@ -145,12 +145,12 @@ func Run(completeOptions completedServerRunOptions, stopCh <-chan struct{}) erro
 	// To help debugging, immediately log version
 	klog.Infof("Version: %+v", version.Get())
 
-	server, err := CreateServerChain(completeOptions, stopCh)
+	server, err := CreateServerChain(completeOptions, stopCh) //zmm: Create Server Chain
 	if err != nil {
 		return err
 	}
 
-	return server.PrepareRun().Run(stopCh)
+	return server.PrepareRun().Run(stopCh) //zmm:
 }
 
 // CreateServerChain creates the apiservers connected via delegation.
@@ -211,7 +211,7 @@ func CreateServerChain(completedOptions completedServerRunOptions, stopCh <-chan
 
 // CreateKubeAPIServer creates and wires a workable kube-apiserver
 func CreateKubeAPIServer(kubeAPIServerConfig *master.Config, delegateAPIServer genericapiserver.DelegationTarget, admissionPostStartHook genericapiserver.PostStartHookFunc) (*master.Master, error) {
-	kubeAPIServer, err := kubeAPIServerConfig.Complete().New(delegateAPIServer)
+	kubeAPIServer, err := kubeAPIServerConfig.Complete().New(delegateAPIServer) //zmm:
 	if err != nil {
 		return nil, err
 	}

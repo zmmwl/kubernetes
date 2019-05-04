@@ -58,7 +58,7 @@ func (d authenticatedDataString) AuthenticatedData() []byte {
 
 var _ value.Context = authenticatedDataString("")
 
-type store struct {
+type store struct { //zmm: etcd store
 	client *clientv3.Client
 	// getOpts contains additional options that should be passed
 	// to all Get() calls.
@@ -87,7 +87,7 @@ func New(c *clientv3.Client, codec runtime.Codec, prefix string, transformer val
 
 func newStore(c *clientv3.Client, pagingEnabled bool, codec runtime.Codec, prefix string, transformer value.Transformer) *store {
 	versioner := etcd.APIObjectVersioner{}
-	result := &store{
+	result := &store{ //zmm: new etcd store
 		client:        c,
 		codec:         codec,
 		versioner:     versioner,
@@ -159,7 +159,7 @@ func (s *store) Create(ctx context.Context, key string, obj, out runtime.Object,
 	txnResp, err := s.client.KV.Txn(ctx).If(
 		notFound(key),
 	).Then(
-		clientv3.OpPut(key, string(newData), opts...),
+		clientv3.OpPut(key, string(newData), opts...), //zmm: etcd put
 	).Commit()
 	if err != nil {
 		return err
@@ -668,7 +668,7 @@ func (s *store) watch(ctx context.Context, key string, rv string, pred storage.S
 		return nil, err
 	}
 	key = path.Join(s.pathPrefix, key)
-	return s.watcher.Watch(ctx, key, int64(rev), recursive, pred)
+	return s.watcher.Watch(ctx, key, int64(rev), recursive, pred)//zmm: watch
 }
 
 func (s *store) getState(getResp *clientv3.GetResponse, key string, v reflect.Value, ignoreNotFound bool) (*objState, error) {

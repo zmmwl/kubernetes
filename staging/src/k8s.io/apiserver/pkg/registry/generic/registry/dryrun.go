@@ -41,7 +41,7 @@ func (s *DryRunnableStorage) Create(ctx context.Context, key string, obj, out ru
 		s.copyInto(obj, out)
 		return nil
 	}
-	return s.Storage.Create(ctx, key, obj, out, ttl)
+	return s.Storage.Create(ctx, key, obj, out, ttl) //zmm:
 }
 
 func (s *DryRunnableStorage) Delete(ctx context.Context, key string, out runtime.Object, preconditions *storage.Preconditions, dryRun bool) error {

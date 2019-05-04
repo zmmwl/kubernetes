@@ -17,7 +17,7 @@ import (
 	"github.com/emicklei/go-restful/log"
 )
 
-// Container holds a collection of WebServices and a http.ServeMux to dispatch http requests.
+// Container holds a collection of WebServices and a http.ServeMux to dispatch http requests. //zmm: container的定义
 // The requests are further dispatched to routes of WebServices using a RouteSelector
 type Container struct {
 	webServicesLock        sync.RWMutex
@@ -85,7 +85,7 @@ func (c *Container) EnableContentEncoding(enabled bool) {
 }
 
 // Add a WebService to the Container. It will detect duplicate root paths and exit in that case.
-func (c *Container) Add(service *WebService) *Container {
+func (c *Container) Add(service *WebService) *Container { //zmm:
 	c.webServicesLock.Lock()
 	defer c.webServicesLock.Unlock()
 
@@ -106,7 +106,7 @@ func (c *Container) Add(service *WebService) *Container {
 	if !c.isRegisteredOnRoot {
 		c.isRegisteredOnRoot = c.addHandler(service, c.ServeMux)
 	}
-	c.webServices = append(c.webServices, service)
+	c.webServices = append(c.webServices, service) //zmm: add webservice into handler
 	return c
 }
 

@@ -78,7 +78,7 @@ type GenericStore interface {
 // specific to the API.
 //
 // TODO: make the default exposed methods exactly match a generic RESTStorage
-type Store struct {
+type Store struct { //zmm: 很重要的store类
 	// NewFunc returns a new instance of the type this registry returns for a
 	// GET of a single object, e.g.:
 	//
@@ -356,7 +356,7 @@ func (e *Store) Create(ctx context.Context, obj runtime.Object, createValidation
 		return nil, err
 	}
 	out := e.NewFunc()
-	if err := e.Storage.Create(ctx, key, obj, out, ttl, dryrun.IsDryRun(options.DryRun)); err != nil {
+	if err := e.Storage.Create(ctx, key, obj, out, ttl, dryrun.IsDryRun(options.DryRun)); err != nil { //zmm:
 		err = storeerr.InterpretCreateError(err, qualifiedResource, name)
 		err = rest.CheckGeneratedNameError(e.CreateStrategy, err, obj)
 		if !kubeerr.IsAlreadyExists(err) {
@@ -1061,7 +1061,7 @@ func (e *Store) finalizeDelete(ctx context.Context, obj runtime.Object, runHooks
 // WatchPredicate. If possible, you should customize PredicateFunc to produce
 // a matcher that matches by key. SelectionPredicate does this for you
 // automatically.
-func (e *Store) Watch(ctx context.Context, options *metainternalversion.ListOptions) (watch.Interface, error) {
+func (e *Store) Watch(ctx context.Context, options *metainternalversion.ListOptions) (watch.Interface, error) { //zmm: watch
 	label := labels.Everything()
 	if options != nil && options.LabelSelector != nil {
 		label = options.LabelSelector
@@ -1080,10 +1080,10 @@ func (e *Store) Watch(ctx context.Context, options *metainternalversion.ListOpti
 }
 
 // WatchPredicate starts a watch for the items that matches.
-func (e *Store) WatchPredicate(ctx context.Context, p storage.SelectionPredicate, resourceVersion string) (watch.Interface, error) {
+func (e *Store) WatchPredicate(ctx context.Context, p storage.SelectionPredicate, resourceVersion string) (watch.Interface, error) {//zmm:
 	if name, ok := p.MatchesSingle(); ok {
 		if key, err := e.KeyFunc(ctx, name); err == nil {
-			w, err := e.Storage.Watch(ctx, key, resourceVersion, p)
+			w, err := e.Storage.Watch(ctx, key, resourceVersion, p)//zmm: watch
 			if err != nil {
 				return nil, err
 			}
@@ -1215,7 +1215,7 @@ func (e *Store) CompleteWithOptions(options *generic.StoreOptions) error {
 		}
 	}
 
-	opts, err := options.RESTOptions.GetRESTOptions(e.DefaultQualifiedResource)
+	opts, err := options.RESTOptions.GetRESTOptions(e.DefaultQualifiedResource) //zmm: ??? 初始化etcd存储？？？
 	if err != nil {
 		return err
 	}

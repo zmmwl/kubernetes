@@ -253,7 +253,7 @@ type AuthorizationInfo struct {
 func NewConfig(codecs serializer.CodecFactory) *Config {
 	return &Config{
 		Serializer:                  codecs,
-		BuildHandlerChainFunc:       DefaultBuildHandlerChain,
+		BuildHandlerChainFunc:       DefaultBuildHandlerChain, //zmm:
 		HandlerChainWaitGroup:       new(utilwaitgroup.SafeWaitGroup),
 		LegacyAPIGroupPrefixes:      sets.NewString(DefaultLegacyAPIPrefix),
 		DisabledPostStartHooks:      sets.NewString(),
@@ -440,9 +440,9 @@ func (c completedConfig) New(name string, delegationTarget DelegationTarget) (*G
 	handlerChainBuilder := func(handler http.Handler) http.Handler {
 		return c.BuildHandlerChainFunc(handler, c.Config)
 	}
-	apiServerHandler := NewAPIServerHandler(name, c.Serializer, handlerChainBuilder, delegationTarget.UnprotectedHandler())
+	apiServerHandler := NewAPIServerHandler(name, c.Serializer, handlerChainBuilder, delegationTarget.UnprotectedHandler()) //zmm:
 
-	s := &GenericAPIServer{
+	s := &GenericAPIServer{	//zmm:
 		discoveryAddresses:     c.DiscoveryAddresses,
 		LoopbackClientConfig:   c.LoopbackClientConfig,
 		legacyAPIGroupPrefixes: c.LegacyAPIGroupPrefixes,
@@ -526,7 +526,7 @@ func (c completedConfig) New(name string, delegationTarget DelegationTarget) (*G
 
 	s.listedPathProvider = routes.ListedPathProviders{s.listedPathProvider, delegationTarget}
 
-	installAPI(s, c.Config)
+	installAPI(s, c.Config) //zmm: 添加路由 "/","/index.html","/swagger-ui/","/debug","/metrics","/version"
 
 	// use the UnprotectedHandler from the delegation target to ensure that we don't attempt to double authenticator, authorize,
 	// or some other part of the filter chain in delegation cases.
@@ -540,7 +540,7 @@ func (c completedConfig) New(name string, delegationTarget DelegationTarget) (*G
 	return s, nil
 }
 
-func DefaultBuildHandlerChain(apiHandler http.Handler, c *Config) http.Handler {
+func DefaultBuildHandlerChain(apiHandler http.Handler, c *Config) http.Handler {//zmm:
 	handler := genericapifilters.WithAuthorization(apiHandler, c.Authorization.Authorizer, c.Serializer)
 	handler = genericfilters.WithMaxInFlightLimit(handler, c.MaxRequestsInFlight, c.MaxMutatingRequestsInFlight, c.LongRunningFunc)
 	handler = genericapifilters.WithImpersonation(handler, c.Authorization.Authorizer, c.Serializer)

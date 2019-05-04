@@ -100,7 +100,7 @@ func (w *watcher) Watch(ctx context.Context, key string, rev int64, recursive bo
 	if recursive && !strings.HasSuffix(key, "/") {
 		key += "/"
 	}
-	wc := w.createWatchChan(ctx, key, rev, recursive, pred)
+	wc := w.createWatchChan(ctx, key, rev, recursive, pred)//zmm: watch
 	go wc.run()
 	return wc, nil
 }
@@ -124,7 +124,7 @@ func (w *watcher) createWatchChan(ctx context.Context, key string, rev int64, re
 	return wc
 }
 
-func (wc *watchChan) run() {
+func (wc *watchChan) run() { //zmm: watch
 	watchClosedCh := make(chan struct{})
 	go wc.startWatching(watchClosedCh)
 
