@@ -117,7 +117,7 @@ func NewDeploymentController(dInformer appsinformers.DeploymentInformer, rsInfor
 		Recorder:   dc.eventRecorder,
 	}
 
-	dInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+	dInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{//zmm: informer addeventhandler
 		AddFunc:    dc.addDeployment,
 		UpdateFunc: dc.updateDeployment,
 		// This will enter the sync loop and no-op, because the deployment has been deleted from the store.

@@ -106,7 +106,7 @@ func NewFilteredSharedInformerFactory(client kubernetes.Interface, defaultResync
 
 // NewSharedInformerFactoryWithOptions constructs a new instance of a SharedInformerFactory with additional options.
 func NewSharedInformerFactoryWithOptions(client kubernetes.Interface, defaultResync time.Duration, options ...SharedInformerOption) SharedInformerFactory {
-	factory := &sharedInformerFactory{
+	factory := &sharedInformerFactory{ //zmm: informerFactory
 		client:           client,
 		namespace:        v1.NamespaceAll,
 		defaultResync:    defaultResync,

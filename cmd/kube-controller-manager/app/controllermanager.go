@@ -106,7 +106,7 @@ controller, and serviceaccounts controller.`,
 				os.Exit(1)
 			}
 
-			if err := Run(c.Complete(), wait.NeverStop); err != nil {
+			if err := Run(c.Complete(), wait.NeverStop); err != nil { //zmm: controller cmd
 				fmt.Fprintf(os.Stderr, "%v\n", err)
 				os.Exit(1)
 			}
@@ -208,13 +208,13 @@ func Run(c *config.CompletedConfig, stopCh <-chan struct{}) error {
 		} else {
 			clientBuilder = rootClientBuilder
 		}
-		controllerContext, err := CreateControllerContext(c, rootClientBuilder, clientBuilder, ctx.Done())
+		controllerContext, err := CreateControllerContext(c, rootClientBuilder, clientBuilder, ctx.Done()) //zmm: create conroller context
 		if err != nil {
 			klog.Fatalf("error building controller context: %v", err)
 		}
 		saTokenControllerInitFunc := serviceAccountTokenControllerStarter{rootClientBuilder: rootClientBuilder}.startServiceAccountTokenController
 
-		if err := StartControllers(controllerContext, saTokenControllerInitFunc, NewControllerInitializers(controllerContext.LoopMode), unsecuredMux); err != nil {
+		if err := StartControllers(controllerContext, saTokenControllerInitFunc, NewControllerInitializers(controllerContext.LoopMode), unsecuredMux); err != nil { //zmm: start controller
 			klog.Fatalf("error starting controllers: %v", err)
 		}
 
@@ -266,7 +266,7 @@ func Run(c *config.CompletedConfig, stopCh <-chan struct{}) error {
 	panic("unreachable")
 }
 
-type ControllerContext struct {
+type ControllerContext struct {//zmm: controllerContext
 	// ClientBuilder will provide a client for this controller to use
 	ClientBuilder controller.ControllerClientBuilder
 
@@ -340,7 +340,7 @@ const (
 
 // NewControllerInitializers is a public map of named controller groups (you can start more than one in an init func)
 // paired to their InitFunc.  This allows for structured downstream composition and subdivision.
-func NewControllerInitializers(loopMode ControllerLoopMode) map[string]InitFunc {
+func NewControllerInitializers(loopMode ControllerLoopMode) map[string]InitFunc { //zmm: controller init funcs
 	controllers := map[string]InitFunc{}
 	controllers["endpoint"] = startEndpointController
 	controllers["replicationcontroller"] = startReplicationController
