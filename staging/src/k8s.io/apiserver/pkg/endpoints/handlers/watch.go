@@ -115,7 +115,7 @@ func serveWatch(watcher watch.Interface, scope RequestScope, req *http.Request, 
 		TimeoutFactory: &realTimeoutFactory{timeout},
 	}
 
-	server.ServeHTTP(w, req)
+	server.ServeHTTP(w, req) //zmm: watch - server watcher.resultChan
 }
 
 // WatchServer serves a watch.Interface over a websocket or vanilla HTTP.
@@ -185,14 +185,14 @@ func (s *WatchServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 
 	// begin the stream
 	w.Header().Set("Content-Type", s.MediaType)
-	w.Header().Set("Transfer-Encoding", "chunked")
+	w.Header().Set("Transfer-Encoding", "chunked") //zmm: watch chunked keep alive http
 	w.WriteHeader(http.StatusOK)
 	flusher.Flush()
 
 	var unknown runtime.Unknown
 	internalEvent := &metav1.InternalEvent{}
 	buf := &bytes.Buffer{}
-	ch := s.Watching.ResultChan()
+	ch := s.Watching.ResultChan() //zmm: watch read resultChan
 	for {
 		select {
 		case <-cn.CloseNotify():
@@ -223,13 +223,13 @@ func (s *WatchServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			// and we get the benefit of using conversion functions which already have to stay in sync
 			outEvent := &metav1.WatchEvent{}
 			*internalEvent = metav1.InternalEvent(event)
-			err := metav1.Convert_v1_InternalEvent_To_v1_WatchEvent(internalEvent, outEvent, nil)
+			err := metav1.Convert_v1_InternalEvent_To_v1_WatchEvent(internalEvent, outEvent, nil) //zmm: watch send event to client? no, just convert
 			if err != nil {
 				utilruntime.HandleError(fmt.Errorf("unable to convert watch object: %v", err))
 				// client disconnect.
 				return
 			}
-			if err := e.Encode(outEvent); err != nil {
+			if err := e.Encode(outEvent); err != nil { //zmm: watch encode and send event to client
 				utilruntime.HandleError(fmt.Errorf("unable to encode watch object %T: %v (%#v)", outEvent, err, e))
 				// client disconnect.
 				return

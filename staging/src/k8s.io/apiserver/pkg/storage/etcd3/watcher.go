@@ -106,7 +106,7 @@ func (w *watcher) Watch(ctx context.Context, key string, rev int64, recursive bo
 }
 
 func (w *watcher) createWatchChan(ctx context.Context, key string, rev int64, recursive bool, pred storage.SelectionPredicate) *watchChan {
-	wc := &watchChan{
+	wc := &watchChan{		//zmm: watch chan
 		watcher:           w,
 		key:               key,
 		initialRev:        rev,
@@ -200,8 +200,8 @@ func (wc *watchChan) startWatching(watchClosedCh chan struct{}) {
 	if wc.recursive {
 		opts = append(opts, clientv3.WithPrefix())
 	}
-	wch := wc.watcher.client.Watch(wc.ctx, wc.key, opts...)
-	for wres := range wch {
+	wch := wc.watcher.client.Watch(wc.ctx, wc.key, opts...) //zmm: watch - etcd client
+	for wres := range wch {		//zmm: watch
 		if wres.Err() != nil {
 			err := wres.Err()
 			// If there is an error on server (e.g. compaction), the channel will return it before closed.
@@ -221,12 +221,12 @@ func (wc *watchChan) startWatching(watchClosedCh chan struct{}) {
 }
 
 // processEvent processes events from etcd watcher and sends results to resultChan.
-func (wc *watchChan) processEvent(wg *sync.WaitGroup) {
+func (wc *watchChan) processEvent(wg *sync.WaitGroup) { //zmm: watch process event
 	defer wg.Done()
 
 	for {
 		select {
-		case e := <-wc.incomingEventChan:
+		case e := <-wc.incomingEventChan: //zmm: watch process event
 			res := wc.transform(e)
 			if res == nil {
 				continue
@@ -239,7 +239,7 @@ func (wc *watchChan) processEvent(wg *sync.WaitGroup) {
 			// Because storing events in local will cause more memory usage.
 			// The worst case would be closing the fast watcher.
 			select {
-			case wc.resultChan <- *res:
+			case wc.resultChan <- *res: //zmm: watch incomingEventChan -> resultChan
 			case <-wc.ctx.Done():
 				return
 			}
@@ -344,7 +344,7 @@ func (wc *watchChan) sendEvent(e *event) {
 			incomingBufSize)
 	}
 	select {
-	case wc.incomingEventChan <- e:
+	case wc.incomingEventChan <- e: //zmm: watch - event
 	case <-wc.ctx.Done():
 	}
 }

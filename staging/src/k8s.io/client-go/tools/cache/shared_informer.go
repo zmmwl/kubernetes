@@ -124,7 +124,7 @@ func WaitForCacheSync(stopCh <-chan struct{}, cacheSyncs ...InformerSynced) bool
 	return true
 }
 
-type sharedIndexInformer struct {
+type sharedIndexInformer struct { //zmm: informer implementation
 	indexer    Indexer
 	controller Controller
 
@@ -186,7 +186,7 @@ type deleteNotification struct {
 	oldObj interface{}
 }
 
-func (s *sharedIndexInformer) Run(stopCh <-chan struct{}) {
+func (s *sharedIndexInformer) Run(stopCh <-chan struct{}) { //zmm: informer run
 	defer utilruntime.HandleCrash()
 
 	fifo := NewDeltaFIFO(MetaNamespaceKeyFunc, s.indexer)
@@ -199,7 +199,7 @@ func (s *sharedIndexInformer) Run(stopCh <-chan struct{}) {
 		RetryOnError:     false,
 		ShouldResync:     s.processor.shouldResync,
 
-		Process: s.HandleDeltas,
+		Process: s.HandleDeltas, //zmm: handle delta
 	}
 
 	func() {
@@ -224,7 +224,7 @@ func (s *sharedIndexInformer) Run(stopCh <-chan struct{}) {
 		defer s.startedLock.Unlock()
 		s.stopped = true // Don't want any new listeners
 	}()
-	s.controller.Run(stopCh)
+	s.controller.Run(stopCh) //zmm: informer start controller run
 }
 
 func (s *sharedIndexInformer) HasSynced() bool {
@@ -336,7 +336,7 @@ func (s *sharedIndexInformer) AddEventHandlerWithResyncPeriod(handler ResourceEv
 	defer s.blockDeltas.Unlock()
 
 	s.processor.addListener(listener)
-	for _, item := range s.indexer.List() {
+	for _, item := range s.indexer.List() { //zmm: listen etcd add/update/del event to handler todo:???
 		listener.add(addNotification{newObj: item})
 	}
 }
@@ -397,7 +397,7 @@ func (p *sharedProcessor) addListenerLocked(listener *processorListener) {
 	p.syncingListeners = append(p.syncingListeners, listener)
 }
 
-func (p *sharedProcessor) distribute(obj interface{}, sync bool) {
+func (p *sharedProcessor) distribute(obj interface{}, sync bool) {//zmm: informer 这里是informer真正把从apiserver得到的变化给到listener
 	p.listenersLock.RLock()
 	defer p.listenersLock.RUnlock()
 

@@ -122,7 +122,7 @@ var internalPackages = []string{"client-go/tools/cache/"}
 func (r *Reflector) Run(stopCh <-chan struct{}) {
 	klog.V(3).Infof("Starting reflector %v (%s) from %s", r.expectedType, r.resyncPeriod, r.name)
 	wait.Until(func() {
-		if err := r.ListAndWatch(stopCh); err != nil {
+		if err := r.ListAndWatch(stopCh); err != nil { //zmm: reflector run list and watch
 			utilruntime.HandleError(err)
 		}
 	}, r.period, stopCh)
@@ -179,7 +179,7 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 					panicCh <- r
 				}
 			}()
-			list, err = r.listerWatcher.List(options)
+			list, err = r.listerWatcher.List(options)//zmm: list
 			close(listCh)
 		}()
 		select {
@@ -193,18 +193,18 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 			return fmt.Errorf("%s: Failed to list %v: %v", r.name, r.expectedType, err)
 		}
 		initTrace.Step("Objects listed")
-		listMetaInterface, err := meta.ListAccessor(list)
+		listMetaInterface, err := meta.ListAccessor(list) //zmm: validate type
 		if err != nil {
 			return fmt.Errorf("%s: Unable to understand list result %#v: %v", r.name, list, err)
 		}
-		resourceVersion = listMetaInterface.GetResourceVersion()
+		resourceVersion = listMetaInterface.GetResourceVersion() //zmm: get current version
 		initTrace.Step("Resource version extracted")
 		items, err := meta.ExtractList(list)
 		if err != nil {
 			return fmt.Errorf("%s: Unable to understand list result %#v (%v)", r.name, list, err)
 		}
 		initTrace.Step("Objects extracted")
-		if err := r.syncWith(items, resourceVersion); err != nil {
+		if err := r.syncWith(items, resourceVersion); err != nil {//zmm: sync
 			return fmt.Errorf("%s: Unable to sync list result: %v", r.name, err)
 		}
 		initTrace.Step("SyncWith done")
@@ -259,7 +259,7 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 			TimeoutSeconds: &timeoutSeconds,
 		}
 
-		w, err := r.listerWatcher.Watch(options)
+		w, err := r.listerWatcher.Watch(options) //zmm: reflector start watch
 		if err != nil {
 			switch err {
 			case io.EOF:
@@ -284,7 +284,7 @@ func (r *Reflector) ListAndWatch(stopCh <-chan struct{}) error {
 			return nil
 		}
 
-		if err := r.watchHandler(w, &resourceVersion, resyncerrc, stopCh); err != nil {
+		if err := r.watchHandler(w, &resourceVersion, resyncerrc, stopCh); err != nil { //zmm: reflector handle watch
 			if err != errorStopRequested {
 				klog.Warningf("%s: watch of %v ended with: %v", r.name, r.expectedType, err)
 			}

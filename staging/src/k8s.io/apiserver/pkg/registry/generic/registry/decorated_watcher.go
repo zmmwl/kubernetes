@@ -47,9 +47,9 @@ func (d *decoratedWatcher) run(ctx context.Context) {
 	var recv, send watch.Event
 	for {
 		select {
-		case recv = <-d.w.ResultChan():
+		case recv = <-d.w.ResultChan(): //zmm: watch, resultchan
 			switch recv.Type {
-			case watch.Added, watch.Modified, watch.Deleted:
+			case watch.Added, watch.Modified, watch.Deleted: //zmm: watch: added, modified, deleted
 				err := d.decorator(recv.Object)
 				if err != nil {
 					send = makeStatusErrorEvent(err)

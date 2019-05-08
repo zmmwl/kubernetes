@@ -97,7 +97,7 @@ func New(c *Config) Controller {
 // Run begins processing items, and will continue until a value is sent down stopCh.
 // It's an error to call Run more than once.
 // Run blocks; call via go.
-func (c *controller) Run(stopCh <-chan struct{}) {
+func (c *controller) Run(stopCh <-chan struct{}) { //zmm: informer -> controller run
 	defer utilruntime.HandleCrash()
 	go func() {
 		<-stopCh

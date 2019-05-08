@@ -557,7 +557,7 @@ func (r *Request) WatchWithSpecificDecoders(wrapperDecoderFn func(io.ReadCloser)
 	}
 
 	url := r.URL().String()
-	req, err := http.NewRequest(r.verb, url, r.body)
+	req, err := http.NewRequest(r.verb, url, r.body) //zmm: controller call apiserver watch
 	if err != nil {
 		return nil, err
 	}

@@ -81,7 +81,7 @@ func (f *deploymentInformer) defaultInformer(client kubernetes.Interface, resync
 }
 
 func (f *deploymentInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&appsv1beta1.Deployment{}, f.defaultInformer)
+	return f.factory.InformerFor(&appsv1beta1.Deployment{}, f.defaultInformer) //zmm: deployment's informer
 }
 
 func (f *deploymentInformer) Lister() v1beta1.DeploymentLister {
