@@ -218,7 +218,7 @@ func Run(c *config.CompletedConfig, stopCh <-chan struct{}) error {
 			klog.Fatalf("error starting controllers: %v", err)
 		}
 
-		controllerContext.InformerFactory.Start(controllerContext.Stop)
+		controllerContext.InformerFactory.Start(controllerContext.Stop) //zmm: start all informers
 		close(controllerContext.InformersStarted)
 
 		select {}
@@ -480,7 +480,7 @@ func StartControllers(ctx ControllerContext, startSATokenController InitFunc, co
 		time.Sleep(wait.Jitter(ctx.ComponentConfig.Generic.ControllerStartInterval.Duration, ControllerStartJitter))
 
 		klog.V(1).Infof("Starting %q", controllerName)
-		debugHandler, started, err := initFn(ctx)
+		debugHandler, started, err := initFn(ctx) //zmm: init controller
 		if err != nil {
 			klog.Errorf("Error starting %q", controllerName)
 			return err
