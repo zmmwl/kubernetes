@@ -270,7 +270,7 @@ func (s *sharedIndexInformer) GetController() Controller {
 	return &dummyController{informer: s}
 }
 
-func (s *sharedIndexInformer) AddEventHandler(handler ResourceEventHandler) {
+func (s *sharedIndexInformer) AddEventHandler(handler ResourceEventHandler) { //zmm: informer add event handler
 	s.AddEventHandlerWithResyncPeriod(handler, s.defaultEventHandlerResyncPeriod)
 }
 

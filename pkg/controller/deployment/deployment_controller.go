@@ -462,7 +462,7 @@ func (dc *DeploymentController) worker() {
 }
 
 func (dc *DeploymentController) processNextWorkItem() bool {
-	key, quit := dc.queue.Get()
+	key, quit := dc.queue.Get() //zmm: informer最终输出key到queue中，此处获取进行处理
 	if quit {
 		return false
 	}
