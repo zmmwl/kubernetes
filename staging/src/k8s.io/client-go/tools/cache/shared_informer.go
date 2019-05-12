@@ -351,7 +351,7 @@ func (s *sharedIndexInformer) HandleDeltas(obj interface{}) error {
 		case Sync, Added, Updated:
 			isSync := d.Type == Sync
 			s.cacheMutationDetector.AddObject(d.Object)
-			if old, exists, err := s.indexer.Get(d.Object); err == nil && exists {
+			if old, exists, err := s.indexer.Get(d.Object); err == nil && exists {//zmm: todo: Delta change待研究
 				if err := s.indexer.Update(d.Object); err != nil {
 					return err
 				}

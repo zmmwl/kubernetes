@@ -55,7 +55,7 @@ type ThreadSafeStore interface {
 }
 
 // threadSafeMap implements ThreadSafeStore
-type threadSafeMap struct {
+type threadSafeMap struct {//zmm: threadSafeMap index
 	lock  sync.RWMutex
 	items map[string]interface{}
 
