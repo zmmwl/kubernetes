@@ -58,7 +58,7 @@ func (v *version) DaemonSets() DaemonSetInformer {
 }
 
 // Deployments returns a DeploymentInformer.
-func (v *version) Deployments() DeploymentInformer {//zmm: deployment informer
+func (v *version) Deployments() DeploymentInformer {//zmm: DeploymentInformer
 	return &deploymentInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
 

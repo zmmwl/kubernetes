@@ -107,7 +107,7 @@ func NewDeploymentController(dInformer appsinformers.DeploymentInformer, rsInfor
 			return nil, err
 		}
 	}
-	dc := &DeploymentController{
+	dc := &DeploymentController{//zmm: DeploymentController
 		client:        client,
 		eventRecorder: eventBroadcaster.NewRecorder(scheme.Scheme, v1.EventSource{Component: "deployment-controller"}),
 		queue:         workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "deployment"),
@@ -117,7 +117,7 @@ func NewDeploymentController(dInformer appsinformers.DeploymentInformer, rsInfor
 		Recorder:   dc.eventRecorder,
 	}
 
-	dInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{//zmm: informer addeventhandler
+	dInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{//zmm: AddEventHandler
 		AddFunc:    dc.addDeployment,
 		UpdateFunc: dc.updateDeployment,
 		// This will enter the sync loop and no-op, because the deployment has been deleted from the store.

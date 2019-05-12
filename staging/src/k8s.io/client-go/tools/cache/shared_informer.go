@@ -78,8 +78,8 @@ func NewSharedInformer(lw ListerWatcher, objType runtime.Object, resyncPeriod ti
 // NewSharedIndexInformer creates a new instance for the listwatcher.
 func NewSharedIndexInformer(lw ListerWatcher, objType runtime.Object, defaultEventHandlerResyncPeriod time.Duration, indexers Indexers) SharedIndexInformer {
 	realClock := &clock.RealClock{}
-	sharedIndexInformer := &sharedIndexInformer{
-		processor:                       &sharedProcessor{clock: realClock},
+	sharedIndexInformer := &sharedIndexInformer{ //zmm: sharedIndexInformer
+		processor:                       &sharedProcessor{clock: realClock},//zmm: informer's sharedProcessor
 		indexer:                         NewIndexer(DeletionHandlingMetaNamespaceKeyFunc, indexers),
 		listerWatcher:                   lw,
 		objectType:                      objType,
@@ -270,7 +270,7 @@ func (s *sharedIndexInformer) GetController() Controller {
 	return &dummyController{informer: s}
 }
 
-func (s *sharedIndexInformer) AddEventHandler(handler ResourceEventHandler) { //zmm: informer add event handler
+func (s *sharedIndexInformer) AddEventHandler(handler ResourceEventHandler) { //zmm: AddEventHandler
 	s.AddEventHandlerWithResyncPeriod(handler, s.defaultEventHandlerResyncPeriod)
 }
 
@@ -336,7 +336,7 @@ func (s *sharedIndexInformer) AddEventHandlerWithResyncPeriod(handler ResourceEv
 	defer s.blockDeltas.Unlock()
 
 	s.processor.addListener(listener)
-	for _, item := range s.indexer.List() { //zmm: listen etcd add/update/del event to handler todo:???
+	for _, item := range s.indexer.List() { //zmm: todo:???
 		listener.add(addNotification{newObj: item})
 	}
 }
@@ -489,7 +489,7 @@ type processorListener struct {
 }
 
 func newProcessListener(handler ResourceEventHandler, requestedResyncPeriod, resyncPeriod time.Duration, now time.Time, bufferSize int) *processorListener {
-	ret := &processorListener{
+	ret := &processorListener{//zmm: informer's processorListener
 		nextCh:                make(chan interface{}),
 		addCh:                 make(chan interface{}),
 		handler:               handler,
