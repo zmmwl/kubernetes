@@ -41,7 +41,7 @@ type deploymentLister struct {
 
 // NewDeploymentLister returns a new DeploymentLister.
 func NewDeploymentLister(indexer cache.Indexer) DeploymentLister {
-	return &deploymentLister{indexer: indexer}
+	return &deploymentLister{indexer: indexer} //zmm: deploymentLister - indexer is cache from informer
 }
 
 // List lists all Deployments in the indexer.

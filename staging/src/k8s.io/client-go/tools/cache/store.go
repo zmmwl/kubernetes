@@ -237,7 +237,7 @@ func NewStore(keyFunc KeyFunc) Store {
 
 // NewIndexer returns an Indexer implemented simply with a map and a lock.
 func NewIndexer(keyFunc KeyFunc, indexers Indexers) Indexer {
-	return &cache{
+	return &cache{//zmm: indexer
 		cacheStorage: NewThreadSafeStore(indexers, Indices{}),
 		keyFunc:      keyFunc,
 	}

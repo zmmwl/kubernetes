@@ -57,7 +57,7 @@ import (
 //
 // Also see the comment on DeltaFIFO.
 func NewDeltaFIFO(keyFunc KeyFunc, knownObjects KeyListerGetter) *DeltaFIFO {
-	f := &DeltaFIFO{
+	f := &DeltaFIFO{//zmm: DeltaFIFO
 		items:        map[string]Deltas{},
 		queue:        []string{},
 		keyFunc:      keyFunc,

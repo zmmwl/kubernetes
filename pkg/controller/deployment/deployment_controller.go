@@ -135,7 +135,7 @@ func NewDeploymentController(dInformer appsinformers.DeploymentInformer, rsInfor
 	dc.syncHandler = dc.syncDeployment
 	dc.enqueueDeployment = dc.enqueue
 
-	dc.dLister = dInformer.Lister()
+	dc.dLister = dInformer.Lister()//zmm: dLister is deploymentLister
 	dc.rsLister = rsInformer.Lister()
 	dc.podLister = podInformer.Lister()
 	dc.dListerSynced = dInformer.Informer().HasSynced

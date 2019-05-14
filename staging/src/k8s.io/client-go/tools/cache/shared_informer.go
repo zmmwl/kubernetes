@@ -72,7 +72,7 @@ type SharedIndexInformer interface {
 
 // NewSharedInformer creates a new instance for the listwatcher.
 func NewSharedInformer(lw ListerWatcher, objType runtime.Object, resyncPeriod time.Duration) SharedInformer {
-	return NewSharedIndexInformer(lw, objType, resyncPeriod, Indexers{})
+	return NewSharedIndexInformer(lw, objType, resyncPeriod, Indexers{})//zmm: indexer's indexer
 }
 
 // NewSharedIndexInformer creates a new instance for the listwatcher.
@@ -80,7 +80,7 @@ func NewSharedIndexInformer(lw ListerWatcher, objType runtime.Object, defaultEve
 	realClock := &clock.RealClock{}
 	sharedIndexInformer := &sharedIndexInformer{ //zmm: sharedIndexInformer
 		processor:                       &sharedProcessor{clock: realClock},//zmm: informer's sharedProcessor
-		indexer:                         NewIndexer(DeletionHandlingMetaNamespaceKeyFunc, indexers),
+		indexer:                         NewIndexer(DeletionHandlingMetaNamespaceKeyFunc, indexers), //zmm: indexer is cache
 		listerWatcher:                   lw,
 		objectType:                      objType,
 		resyncCheckPeriod:               defaultEventHandlerResyncPeriod,
@@ -355,7 +355,7 @@ func (s *sharedIndexInformer) HandleDeltas(obj interface{}) error {
 				if err := s.indexer.Update(d.Object); err != nil {
 					return err
 				}
-				s.processor.distribute(updateNotification{oldObj: old, newObj: d.Object}, isSync)
+				s.processor.distribute(updateNotification{oldObj: old, newObj: d.Object}, isSync)//zmm: 传入listener.add的元素
 			} else {
 				if err := s.indexer.Add(d.Object); err != nil {
 					return err
